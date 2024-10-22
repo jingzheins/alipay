@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://www.layuicdn.com/layui-v2.8.0/css/layui.css"
+    />
+  </head>
+  <body>
+    <div
+      style="
+        display: flex;
+        justify-content: center;
+        height: 100vh;
+        align-items: center;
+      "
+    >
+      <form class="layui-form" action="">
+        <div class="layui-form-item">
+          <label class="layui-form-label">姓名</label>
+          <div class="layui-input-block">
+            <input
+              type="text"
+              name="title"
+              required
+              lay-verify="required"
+              placeholder="请输入姓名"
+              autocomplete="off"
+              class="layui-input"
+            />
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">银行卡账号</label>
+          <div class="layui-input-block">
+            <input
+              type="text"
+              name="title"
+              required
+              lay-verify="required"
+              placeholder="请输入银行卡账号"
+              autocomplete="off"
+              class="layui-input"
+            />
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">所属银行</label>
+          <div class="layui-input-block">
+            <select name="city" lay-verify="required">
+              <option value=""></option>
+              <option value="0">北京</option>
+              <option value="1">上海</option>
+              <option value="2">广州</option>
+              <option value="3">深圳</option>
+              <option value="4">杭州</option>
+            </select>
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <div class="layui-input-block">
+            <button class="layui-btn" lay-submit lay-filter="formDemo">
+              立即提交
+            </button>
+            <button type="reset" class="layui-btn layui-btn-primary">
+              重置
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+   
+    <script>
+      console.log( bankCardAttribution('6217001210024455220') )
+    </script>
+    <script src="./bankcardinfo2.0.0.js"></script>
+    <script src="https://www.layuicdn.com/layui-v2.8.0/layui.js"></script>
+    <!--您的Layui代码start-->
+    <script type="text/javascript">
+      layui.use(function () {
+        var layer = layui.layer; //弹层 示例...
+
+        // 弹出一个示例
+        layer.msg("Hello World", { icon: 6 });
+      });
+    </script>
+  </body>
+</html>

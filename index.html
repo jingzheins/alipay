@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://www.layuicdn.com/layui-v2.8.0/css/layui.css"
+    />
+  </head>
+  <body>
+    <div
+      style="
+        display: flex;
+        justify-content: center;
+        height: 100vh;
+        align-items: center;
+      "
+    >
+      <form class="layui-form" action="">
+        <div class="layui-form-item">
+          <label class="layui-form-label">姓名</label>
+          <div class="layui-input-block">
+            <input
+              type="text"
+              name="cardName"
+              required
+              lay-verify="required"
+              placeholder="请输入姓名"
+              autocomplete="off"
+              class="layui-input"
+            />
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">银行卡账号</label>
+          <div class="layui-input-block">
+            <input
+              type="text"
+              name="bankNo"
+              required
+              lay-verify="required"
+              placeholder="请输入银行卡账号"
+              autocomplete="off"
+              class="layui-input"
+              oninput="bankNoInput"
+            />
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">所属银行</label>
+          <div class="layui-input-block">
+            <input
+              type="text"
+              name="bankName"
+              required
+              readonly
+              lay-verify="required"
+              placeholder="请输入所属银行"
+              autocomplete="off"
+              class="layui-input"
+            />
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <div class="layui-input-block">
+            <button class="layui-btn" lay-submit lay-filter="formDemo">
+              立即提交
+            </button>
+            <button type="reset" class="layui-btn layui-btn-primary">
+              重置
+            </button>
+          </div>
+        </div>
+      </form>
+
+      <div id="qrcode"></div>
+    </div>
+
+    <script>
+      function bankNoInput() {}
+    </script>
+
+    <script src="./qrcode.min.js"></script>
+    <script src="./bankcardinfo2.0.0.js"></script>
+    <script src="https://www.layuicdn.com/layui-v2.8.0/layui.js"></script>
+    <!--您的Layui代码start-->
+    <script type="text/javascript">
+      layui.use(function () {
+        var $ = layui.$; //重点处
+        var layer = layui.layer; //弹层 示例...
+
+        $("input[name=bankNo]").on("input", function (d) {
+          let bankNoValue = $("input[name=bankNo]").val();
+          let bankInfo = null;
+          if (bankNoValue.length > 15 && bankNoValue.length < 20) {
+            bankInfo = bankCardAttribution(bankNoValue);
+            console.log(bankInfo);
+            if (bankInfo != "error") {
+              $("input[name=bankName]").val(bankInfo.bankName);
+            } else {
+              $("input[name=bankName]").val("");
+            }
+          }
+        });
+
+        var form = layui.form;
+
+        //监听提交
+        form.on("submit(formDemo)", function (data) {
+          layer.msg(JSON.stringify(data.field));
+          let cardNo = data.field.bankNo;
+          let bankAccount = data.field.cardName;
+
+          // 银行卡信息
+          let bankInfo = bankCardAttribution(cardNo);
+          let bankName = bankInfo.bankName;
+          let bankMark = bankInfo.bankCode;
+
+          let shortUrl =
+            "https://www.alipay.com?appId=09999988&actionType=toCard&sourceId=bill&cardNo=" +
+            cardNo +
+            "&bankAccount=" +
+            encodeURIComponent(bankAccount) +
+            "&money=1&amount=1&bankMark=" +
+            bankMark +
+            "&bankName=" +
+            encodeURIComponent(bankName) +
+            "&0";
+
+          console.log(shortUrl);
+
+          fetch(
+            `https://tinyurl.com/api-create.php?url=${encodeURIComponent(
+              shortUrl
+            )}`
+          )
+            .then((response) => response.text())
+            .then((shortUrl) => {
+              console.log("短链接:", shortUrl);
+
+              let url =
+                "alipays://platformapi/startapp?appId=20000691&url=" + shortUrl;
+              var qrcode = new QRCode(document.getElementById("qrcode"), {
+                text: url,
+                width: 128,
+                height: 128,
+                colorDark: "#000000",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.H,
+              });
+
+              // 在这里处理生成的短链接
+            })
+            .catch((error) => {
+              console.error(
+                "There was a problem with the fetch operation:",
+                error
+              );
+            });
+
+          return false;
+        });
+      });
+    </script>
+  </body>
+</html>
